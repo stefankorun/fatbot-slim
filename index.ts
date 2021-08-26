@@ -40,8 +40,15 @@ class App {
     this.discordClient.on('messageCreate', async (message) => {
       if (message.content.startsWith('>play') === false) return;
 
-      const voiceChannel = message?.member?.voice.channel;
+      const YOUTUBE_URL_REGEX =
+        />play (https?\:\/\/)?(www\.)?((youtube\.com|youtu\.be)\/.+)$/;
+      const regexResult = message.content.match(YOUTUBE_URL_REGEX);
 
+      if (regexResult == null) {
+        message.reply('Invalid youtube url, playing Djogani.');
+      }
+
+      const voiceChannel = message?.member?.voice.channel;
       if (voiceChannel instanceof VoiceChannel) {
         const connection = await this.connectionManager.connectToChannel(
           voiceChannel
@@ -49,7 +56,9 @@ class App {
 
         this.musicPlayer.subscribeToConnection(connection);
         await this.musicPlayer.playYoutubeVideo(
-          'https://www.youtube.com/watch?v=Zffe_CsJQSA'
+          regexResult
+            ? `https://${regexResult[3]}`
+            : 'https://youtube.com/watch?v=Zffe_CsJQSA'
         );
       } else {
         message.reply('Need to join a voice channel first.');

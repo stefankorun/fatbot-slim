@@ -154,3 +154,7 @@ dist
 # MacOS
 
 .DS_Store
+
+# VSCode settings
+
+.vscode

@@ -16,7 +16,7 @@ export class DiscordClient extends DiscordClientBase {
   }
 
   async init() {
-    await this.login(this.configService.get('token'));
+    await this.login(this.configService.get('DISCORD_TOKEN'));
 
     this.on('ready', () => {
       console.log(`Logged in as ${this?.user?.tag}!`);

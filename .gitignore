@@ -93,7 +93,6 @@ web_modules/
 .env
 .env.test
 .env.production
-.env.json
 
 # parcel-bundler cache (https://parceljs.org/)
 

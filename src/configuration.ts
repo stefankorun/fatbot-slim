@@ -1,11 +1,11 @@
+require('dotenv').config();
 import { singleton } from 'tsyringe';
-import config from '../.env.json';
+
+type EnvoirmentVariables = 'DISCORD_TOKEN';
 
 @singleton()
 export class ConfigurationService {
-  config = config;
-
-  get(key: keyof typeof config) {
-    return config[key];
+  get(key: EnvoirmentVariables) {
+    return process.env[key];
   }
 }

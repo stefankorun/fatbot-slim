@@ -1,11 +1,11 @@
 import '@abraham/reflection';
 import { VoiceChannel } from 'discord.js';
 import { container, singleton } from 'tsyringe';
-import { DiscordClient, GroobyClient } from './src/client';
-import { CommandHandler } from './src/command-handler';
-import { ConnectionManager } from './src/connection-manager';
-import { MusicPlayer } from './src/music-player';
-import { YoutubeService } from './src/services/youtube';
+import { DiscordClient, GroobyClient } from './client';
+import { CommandHandler } from './command-handler';
+import { ConnectionManager } from './connection-manager';
+import { MusicPlayer } from './music-player';
+import { YoutubeService } from './services/youtube';
 
 @singleton()
 class App {

@@ -6,7 +6,7 @@ const DUMB_URL_REGEX = /(https?:\/\/)|(www\.)([\w-\?\.])+$/;
 const YOUTUBE_URL_REGEX =
   /(https?\:\/\/)?(www\.)?((youtube\.com|youtu\.be)\/.+)$/;
 
-const YOUTUBE_API_URL = 'https://youtube.googleapis.com/youtube/v3/';
+const YOUTUBE_API_URL = 'https://youtube.googleapis.com/youtube/v3';
 
 @singleton()
 export class YoutubeService {
@@ -15,12 +15,9 @@ export class YoutubeService {
   async searchYoutube(query: string) {
     const res = await got
       .get({
-        url: `${YOUTUBE_API_URL}search?part=snippet&maxResults=25&q=${query}&regionCode=US&type=video&videoCategoryId=10&key=${this.config.get(
+        url: `${YOUTUBE_API_URL}/search?part=snippet&maxResults=1&q=${query}&regionCode=US&type=video&videoCategoryId=10&key=${this.config.get(
           'YOUTUBE_API_KEY'
         )}`,
-        headers: {
-          Accept: 'application/json',
-        },
       })
       .json<YoutubeSearchResults>();
 

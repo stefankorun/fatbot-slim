@@ -48,4 +48,8 @@ export class MusicPlayer {
     MusicPlayer.AudioPlayer.play(resource);
     return entersState(MusicPlayer.AudioPlayer, AudioPlayerStatus.Playing, 5e3);
   }
+
+  stop() {
+    MusicPlayer.AudioPlayer.stop();
+  }
 }

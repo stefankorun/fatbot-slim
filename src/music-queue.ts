@@ -31,4 +31,12 @@ export class MusicQueue {
       this.nowPlaying && this.musicPlayer.playYoutubeVideo(this.nowPlaying.url);
     }
   }
+
+  clear() {
+    this.queue = new Array<Track>();
+    this.nowPlaying = undefined;
+    this.musicPlayer.stop();
+    this.musicPlayer.disconnect();
+  }
+
 }

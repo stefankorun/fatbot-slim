@@ -1,21 +1,16 @@
 import '@abraham/reflection';
-import { VoiceChannel } from 'discord.js';
 import { container, singleton } from 'tsyringe';
-import { DiscordClient, GroobyClient } from './client';
+import { DiscordClient, GroobyBot } from './client';
 import { CommandHandler } from './command-handler';
 import { ConnectionManager } from './connection-manager';
-import { MusicPlayer } from './music-player';
 import { YoutubeService } from './services/youtube';
 
 @singleton()
 class App {
   constructor(
     private discordClient: DiscordClient,
-    private groobyClient: GroobyClient,
-    private connectionManager: ConnectionManager,
-    private commandHandler: CommandHandler,
-    private musicPlayer: MusicPlayer,
-    private youtubeService: YoutubeService
+    private groobyBot: GroobyBot,
+    private commandHandler: CommandHandler
   ) {}
 
   async init() {
@@ -31,30 +26,24 @@ class App {
   async handleMusicMessage() {
     this.discordClient.on('messageCreate', async (message) => {
       if (message.content.startsWith('>play') === false) return;
+      if (message?.member == null)
+        throw new Error('Music command missing author.');
 
-      const voiceChannel = message?.member?.voice.channel;
-      if (!(voiceChannel instanceof VoiceChannel)) {
-        message.reply('Need to join a voice channel first.');
-        return;
-      }
-      const connection = await this.connectionManager.connectToChannel(
-        voiceChannel
+      const connection = await this.groobyBot.connectToMemberVoiceChannel(
+        message.member
       );
+      if (connection == null)
+        return message.reply('Need to join a voice channel first.'), undefined;
 
-      const youtubeUrl = await this.youtubeService.parse(
-        message.content.replace('>play ', '')
-      );
-      await this.musicPlayer.playYoutubeVideo(
-        youtubeUrl ? youtubeUrl : 'https://youtube.com/watch?v=Zffe_CsJQSA'
-      );
+      const songQuery = message.content.replace('>play ', '');
 
-      this.musicPlayer.subscribeToConnection(connection);
+      this.groobyBot.addToQueue(songQuery);
     });
   }
 
   async registerHandlers() {
     // Register bot commands.
-    const mainGuild = await this.groobyClient.getMainGuild();
+    const mainGuild = await this.groobyBot.getMainGuild();
     if (mainGuild) {
       await this.commandHandler.register(mainGuild);
     } else {

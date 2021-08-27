@@ -3,6 +3,7 @@ import {
   createAudioPlayer,
   createAudioResource,
   entersState,
+  PlayerSubscription,
   StreamType,
   VoiceConnection,
 } from '@discordjs/voice';
@@ -12,9 +13,28 @@ import ytdl from 'ytdl-core';
 @singleton()
 export class MusicPlayer {
   static AudioPlayer = createAudioPlayer();
+  currentSubscription?: PlayerSubscription;
+  public songEndedCallback?: () => void;
+
+  constructor() {
+    MusicPlayer.AudioPlayer.on('stateChange', (oldState, newState) => {
+      if (
+        oldState.status === AudioPlayerStatus.Playing &&
+        newState.status === AudioPlayerStatus.Idle
+      ) {
+        console.log('Song ended!');
+        this.songEndedCallback?.();
+      }
+    });
+  }
+
+  disconnect() {
+    this.currentSubscription?.connection.destroy();
+    this.currentSubscription = undefined;
+  }
 
   subscribeToConnection(connection: VoiceConnection) {
-    connection.subscribe(MusicPlayer.AudioPlayer);
+    this.currentSubscription = connection.subscribe(MusicPlayer.AudioPlayer);
   }
 
   playYoutubeVideo(url: string) {

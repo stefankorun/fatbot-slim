@@ -3,13 +3,16 @@ import { container, singleton } from 'tsyringe';
 import { InteractionHandler } from './interaction-handler';
 import { DiscordClient } from './discord-client';
 import { GroobyBot } from './grooby-bot';
+import { GroovyCommand } from './command-handlers/groovy-command';
+import { CommandBus } from './command-bus';
 
 @singleton()
 class App {
   constructor(
     private discordClient: DiscordClient,
     private groobyBot: GroobyBot,
-    private interactionHandler: InteractionHandler
+    private interactionHandler: InteractionHandler,
+    private commandBus: CommandBus
   ) {}
 
   async init() {
@@ -24,19 +27,12 @@ class App {
    */
   async handleMusicMessage() {
     this.discordClient.on('messageCreate', async (message) => {
-      if (message.content.startsWith('>play') === false) return;
-      if (message?.member == null)
-        throw new Error('Music command missing author.');
+      if (!message.content.startsWith(`>${GroovyCommand.Play}`)) return;
 
-      const connection = await this.groobyBot.connectToMemberVoiceChannel(
-        message.member
-      );
-      if (connection == null)
-        return message.reply('Need to join a voice channel first.'), undefined;
-
-      const songQuery = message.content.replace('>play ', '');
-
-      this.groobyBot.queueSong(songQuery);
+      this.commandBus.execute({
+        type: GroovyCommand.Play,
+        payload: message
+      });
     });
   }
 

@@ -27,8 +27,7 @@ export class MusicQueue {
 
     if (this.nowPlaying == null) {
       console.log('Playing next song');
-      this.nowPlaying = this.queue.shift();
-      this.nowPlaying && this.musicPlayer.playYoutubeVideo(this.nowPlaying.url);
+      this.playNext();
     }
   }
 
@@ -39,4 +38,15 @@ export class MusicQueue {
     this.musicPlayer.disconnect();
   }
 
+  skip(count = 1) {
+    if (this.queue.length > 0 && count < this.queue.length) {
+      this.queue = this.queue.slice(count, this.queue.length);
+      this.playNext();
+    }
+  }
+
+  private playNext() {
+    this.nowPlaying = this.queue.shift();
+    this.nowPlaying && this.musicPlayer.playYoutubeVideo(this.nowPlaying.url);
+  }
 }

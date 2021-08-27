@@ -5,6 +5,7 @@ import { DiscordClient, GroobyClient } from './src/client';
 import { CommandHandler } from './src/command-handler';
 import { ConnectionManager } from './src/connection-manager';
 import { MusicPlayer } from './src/music-player';
+import { YoutubeService } from './src/services/youtube';
 
 @singleton()
 class App {
@@ -12,8 +13,9 @@ class App {
     private discordClient: DiscordClient,
     private groobyClient: GroobyClient,
     private connectionManager: ConnectionManager,
+    private commandHandler: CommandHandler,
     private musicPlayer: MusicPlayer,
-    private commandHandler: CommandHandler
+    private youtubeService: YoutubeService
   ) {}
 
   async init() {
@@ -40,13 +42,9 @@ class App {
     this.discordClient.on('messageCreate', async (message) => {
       if (message.content.startsWith('>play') === false) return;
 
-      const YOUTUBE_URL_REGEX =
-        />play (https?\:\/\/)?(www\.)?((youtube\.com|youtu\.be)\/.+)$/;
-      const regexResult = message.content.match(YOUTUBE_URL_REGEX);
-
-      if (regexResult == null) {
-        message.reply('Invalid youtube url, playing Djogani.');
-      }
+      const youtubeUrl = await this.youtubeService.parse(
+        message.content.replace('>play ', '')
+      );
 
       const voiceChannel = message?.member?.voice.channel;
       if (voiceChannel instanceof VoiceChannel) {
@@ -56,9 +54,7 @@ class App {
 
         this.musicPlayer.subscribeToConnection(connection);
         await this.musicPlayer.playYoutubeVideo(
-          regexResult
-            ? `https://${regexResult[3]}`
-            : 'https://youtube.com/watch?v=Zffe_CsJQSA'
+          youtubeUrl ? youtubeUrl : 'https://youtube.com/watch?v=Zffe_CsJQSA'
         );
       } else {
         message.reply('Need to join a voice channel first.');

@@ -24,6 +24,7 @@
     "ffmpeg": "^0.0.4",
     "ffmpeg-static": "^4.4.0",
     "fluent-ffmpeg": "^2.1.2",
+    "got": "^11.8.2",
     "libsodium-wrappers": "^0.7.9",
     "tsyringe": "^4.6.0",
     "typescript": "^4.3.5",

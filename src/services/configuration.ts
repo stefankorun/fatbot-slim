@@ -1,7 +1,7 @@
 require('dotenv').config();
 import { singleton } from 'tsyringe';
 
-type EnvoirmentVariables = 'DISCORD_TOKEN';
+type EnvoirmentVariables = 'DISCORD_TOKEN' | 'YOUTUBE_API_KEY';
 
 @singleton()
 export class ConfigurationService {

@@ -1,6 +1,6 @@
 import { Client as DiscordClientBase, Intents } from 'discord.js';
 import { singleton } from 'tsyringe';
-import { ConfigurationService } from './configuration';
+import { ConfigurationService } from './services/configuration';
 
 @singleton()
 export class DiscordClient extends DiscordClientBase {

@@ -1,6 +1,6 @@
 import '@abraham/reflection';
 import { container, singleton } from 'tsyringe';
-import { DiscordClient, GroobyBot } from './client';
+import { DiscordClient, GroobyBot } from './discord-client';
 import { CommandHandler } from './command-handler';
 import { ConnectionManager } from './connection-manager';
 import { YoutubeService } from './services/youtube';

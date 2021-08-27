@@ -42,23 +42,23 @@ class App {
     this.discordClient.on('messageCreate', async (message) => {
       if (message.content.startsWith('>play') === false) return;
 
+      const voiceChannel = message?.member?.voice.channel;
+      if (!(voiceChannel instanceof VoiceChannel)) {
+        message.reply('Need to join a voice channel first.');
+        return;
+      }
+      const connection = await this.connectionManager.connectToChannel(
+        voiceChannel
+      );
+
       const youtubeUrl = await this.youtubeService.parse(
         message.content.replace('>play ', '')
       );
+      await this.musicPlayer.playYoutubeVideo(
+        youtubeUrl ? youtubeUrl : 'https://youtube.com/watch?v=Zffe_CsJQSA'
+      );
 
-      const voiceChannel = message?.member?.voice.channel;
-      if (voiceChannel instanceof VoiceChannel) {
-        const connection = await this.connectionManager.connectToChannel(
-          voiceChannel
-        );
-
-        this.musicPlayer.subscribeToConnection(connection);
-        await this.musicPlayer.playYoutubeVideo(
-          youtubeUrl ? youtubeUrl : 'https://youtube.com/watch?v=Zffe_CsJQSA'
-        );
-      } else {
-        message.reply('Need to join a voice channel first.');
-      }
+      this.musicPlayer.subscribeToConnection(connection);
     });
   }
 }

@@ -2,7 +2,7 @@ import { ApplicationCommandData, Guild, Interaction } from 'discord.js';
 import { injectable } from 'tsyringe';
 
 @injectable()
-export class CommandHandler {
+export class InteractionHandler {
   async register(guild: Guild) {
     return guild.commands.set([
       {

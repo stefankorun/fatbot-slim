@@ -1,6 +1,6 @@
 import '@abraham/reflection';
 import { container, singleton } from 'tsyringe';
-import { CommandHandler } from './command-handler';
+import { InteractionHandler } from './interaction-handler';
 import { DiscordClient } from './discord-client';
 import { GroobyBot } from './grooby-bot';
 
@@ -9,7 +9,7 @@ class App {
   constructor(
     private discordClient: DiscordClient,
     private groobyBot: GroobyBot,
-    private commandHandler: CommandHandler
+    private interactionHandler: InteractionHandler
   ) {}
 
   async init() {
@@ -44,7 +44,7 @@ class App {
     // Register bot commands.
     const mainGuild = await this.groobyBot.getMainGuild();
     if (mainGuild) {
-      await this.commandHandler.register(mainGuild);
+      await this.interactionHandler.register(mainGuild);
     } else {
       console.error('Could not find Guild to attach commands to.');
     }
@@ -52,7 +52,7 @@ class App {
     // Register command and message handlers.
     this.discordClient.on(
       'interactionCreate',
-      async (interaction) => await this.commandHandler.handle(interaction)
+      async (interaction) => await this.interactionHandler.handle(interaction)
     );
 
     // Replay message on receive.

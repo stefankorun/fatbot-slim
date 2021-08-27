@@ -1,9 +1,8 @@
 import '@abraham/reflection';
 import { container, singleton } from 'tsyringe';
-import { DiscordClient, GroobyBot } from './discord-client';
 import { CommandHandler } from './command-handler';
-import { ConnectionManager } from './connection-manager';
-import { YoutubeService } from './services/youtube';
+import { DiscordClient } from './discord-client';
+import { GroobyBot } from './grooby-bot';
 
 @singleton()
 class App {
@@ -37,7 +36,7 @@ class App {
 
       const songQuery = message.content.replace('>play ', '');
 
-      this.groobyBot.addToQueue(songQuery);
+      this.groobyBot.queueSong(songQuery);
     });
   }
 

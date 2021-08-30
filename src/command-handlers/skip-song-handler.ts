@@ -13,15 +13,14 @@ export class SkipSongHandler implements CommandHandler<CommandInteraction> {
         required: false,
         description: 'Number of songs to skip',
         name: 'count',
-        type: 'INTEGER'
-      }
-    ]
+        type: 'INTEGER',
+      },
+    ],
   };
 
-  constructor(private readonly musicQueue: MusicQueue) {
-  }
+  constructor(private readonly musicQueue: MusicQueue) {}
 
-  async handle({payload}: Command<CommandInteraction>) {
+  async handle({ payload }: Command<CommandInteraction>) {
     this.musicQueue.skip(this.skipCount(payload));
     await payload.reply('Samo napred');
   }

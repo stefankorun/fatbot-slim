@@ -8,12 +8,12 @@ import { Command } from './command';
  */
 @singleton()
 export class CommandBus {
-  execute(command: Command<any>) {
+  execute(command: Command<unknown>) {
     if (!command) throw new Error('Command must be defined!');
 
     console.log('Handling command: ', command.type);
 
-    const handler: CommandHandler<any> = container.resolve(command.type);
+    const handler: CommandHandler<unknown> = container.resolve(command.type);
     handler.handle(command);
   }
 }

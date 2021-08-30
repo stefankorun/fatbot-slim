@@ -1,6 +1,6 @@
 export enum GroovyCommand {
-  Play = 'play',
+  Play = 'sviri',
   Stop = 'sus-bre',
   SkipSong = 'sledeca',
-  SurpriseMe = 'bicu-poznata'
+  SurpriseMe = 'bicu-poznata',
 }

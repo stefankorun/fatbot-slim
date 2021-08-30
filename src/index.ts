@@ -18,22 +18,6 @@ class App {
   async init() {
     await this.discordClient.init();
     await this.registerHandlers();
-    await this.handleMusicMessage();
-  }
-
-  /**
-   * React to commands starting with '>play' in order to start playing a song.
-   * @deprecated Refactor candidate.
-   */
-  async handleMusicMessage() {
-    this.discordClient.on('messageCreate', async (message) => {
-      if (!message.content.startsWith(`>${GroovyCommand.Play}`)) return;
-
-      this.commandBus.execute({
-        type: GroovyCommand.Play,
-        payload: message
-      });
-    });
   }
 
   async registerHandlers() {

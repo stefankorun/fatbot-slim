@@ -3,10 +3,12 @@ import { ApplicationCommandData, CommandInteraction } from 'discord.js';
 import { GroovyCommand } from './groovy-command';
 
 @commandHandler(GroovyCommand.SurpriseMe)
-export class IWillBeFamousHandler implements CommandHandler<CommandInteraction> {
+export class IWillBeFamousHandler
+  implements CommandHandler<CommandInteraction>
+{
   static readonly commandData: ApplicationCommandData = {
     name: GroovyCommand.SurpriseMe,
-    description: 'djogani'
+    description: 'djogani',
   };
 
   async handle(command: Command<CommandInteraction>) {

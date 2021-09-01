@@ -1,4 +1,5 @@
 import {
+  AudioPlayerError,
   AudioPlayerStatus,
   createAudioPlayer,
   createAudioResource,
@@ -14,7 +15,10 @@ import ytdl from 'ytdl-core';
 export class MusicPlayer {
   static AudioPlayer = createAudioPlayer();
   currentSubscription?: PlayerSubscription;
+
+  /** Refactor events to a better EventEmmiter structure */
   public songEndedCallback?: () => void;
+  public audioPlayerErrorCallback?: (error: AudioPlayerError) => void;
 
   constructor() {
     MusicPlayer.AudioPlayer.on('stateChange', (oldState, newState) => {
@@ -26,6 +30,10 @@ export class MusicPlayer {
         this.songEndedCallback?.();
       }
     });
+
+    MusicPlayer.AudioPlayer.on('error', (error) =>
+      this.audioPlayerErrorCallback?.(error)
+    );
   }
 
   disconnect() {
@@ -40,6 +48,7 @@ export class MusicPlayer {
   playYoutubeVideo(url: string) {
     const stream = ytdl(url, {
       filter: 'audioonly',
+      quality: 'highestaudio',
     });
     const resource = createAudioResource(stream, {
       inputType: StreamType.Arbitrary,

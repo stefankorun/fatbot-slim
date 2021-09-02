@@ -61,4 +61,12 @@ export class MusicPlayer {
   stop() {
     MusicPlayer.AudioPlayer.stop();
   }
+
+  pause() {
+    MusicPlayer.AudioPlayer.pause();
+  }
+
+  resume() {
+    MusicPlayer.AudioPlayer.unpause();
+  }
 }

@@ -30,7 +30,7 @@ export class MusicQueue {
   }
 
   updateQueue() {
-    if (this.queue.length === 0) return this.musicPlayer.disconnect();
+    if (this.size() === 0) return this.musicPlayer.disconnect();
 
     if (this.nowPlaying == null) {
       console.log('Playing next song');
@@ -46,10 +46,14 @@ export class MusicQueue {
   }
 
   skip(count = 1) {
-    if (this.queue.length > 0 && count < this.queue.length) {
-      this.queue = this.queue.slice(count, this.queue.length);
+    if (this.size() > 0 && count <= this.size()) {
+      this.queue = this.queue.slice(count - 1, this.size());
       this.playNext();
     }
+  }
+
+  private size() {
+    return this.queue.length;
   }
 
   private playNext() {

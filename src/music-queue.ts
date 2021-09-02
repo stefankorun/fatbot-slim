@@ -15,6 +15,13 @@ export class MusicQueue {
       this.nowPlaying = undefined;
       this.updateQueue();
     };
+
+    // FIXME: Potential infinite loop,
+    // when sending invalid resource instead of handling network error.
+    this.musicPlayer.audioPlayerErrorCallback = (error) => {
+      console.log('Trying to restore music after audio disconnect.', error);
+      this.musicPlayer.currentSubscription?.player.play(error.resource);
+    };
   }
 
   push(track: Track) {

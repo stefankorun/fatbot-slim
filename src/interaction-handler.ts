@@ -15,7 +15,9 @@ export class InteractionHandler {
     return guild.commands.set(
       commands.map((command) => ({
         ...command,
-        name: `${this.config.get('DISCORD_PREFIX')}_${command.name}`,
+        name: this.config.get('DISCORD_PREFIX')
+          ? `${this.config.get('DISCORD_PREFIX')}_${command.name}`
+          : command.name,
       }))
     );
   }

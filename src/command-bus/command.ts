@@ -1,4 +1,4 @@
 export interface Command<T> {
-  type: string;
+  readonly type: string;
   payload: T;
 }

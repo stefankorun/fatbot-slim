@@ -1,4 +1,4 @@
 export * from './command';
-export * from './command-bus';
 export * from './command-handler';
-export * from './command-handler-decorator';
+export * from './decorators';
+export * from './command-bus';

@@ -3,7 +3,6 @@ import { container, singleton } from 'tsyringe';
 import { InteractionHandler } from './interaction-handler';
 import { DiscordClient } from './discord-client';
 import { GroobyBot } from './grooby-bot';
-import { GroovyCommand } from './command-handlers/groovy-command';
 import { CommandBus } from './command-bus';
 
 @singleton()
@@ -16,6 +15,10 @@ class App {
   ) {}
 
   async init() {
+    this.commandBus.subscribe((c) =>
+      console.log('Command', c.type)
+    );
+
     await this.discordClient.init();
     await this.registerHandlers();
   }

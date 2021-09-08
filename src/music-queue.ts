@@ -33,7 +33,7 @@ export class MusicQueue {
   }
 
   updateQueue() {
-    if (this.size() === 0) return this.musicPlayer.disconnect();
+    if (this.size() === 0) return;
 
     if (this.nowPlaying == null) {
       console.log('Playing next song');

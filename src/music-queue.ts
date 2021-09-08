@@ -1,3 +1,4 @@
+import { AudioPlayerError } from '@discordjs/voice';
 import { singleton } from 'tsyringe';
 import { MusicPlayer } from './music-player';
 
@@ -19,8 +20,10 @@ export class MusicQueue {
     // FIXME: Potential infinite loop,
     // when sending invalid resource instead of handling network error.
     this.musicPlayer.audioPlayerErrorCallback = (error) => {
-      console.log('Trying to restore music after audio disconnect.', error);
-      this.musicPlayer.currentSubscription?.player.play(error.resource);
+      if (error instanceof AudioPlayerError && error.message === 'aborted') {
+        console.warn('Audio played disconnected, playing next sond.', error);
+        this.musicPlayer.currentSubscription?.player.play(error.resource);
+      }
     };
   }
 
@@ -30,7 +33,7 @@ export class MusicQueue {
   }
 
   updateQueue() {
-    if (this.size() === 0) return this.musicPlayer.disconnect();
+    if (this.size() === 0) return;
 
     if (this.nowPlaying == null) {
       console.log('Playing next song');

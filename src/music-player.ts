@@ -48,7 +48,7 @@ export class MusicPlayer {
   playYoutubeVideo(url: string) {
     const stream = ytdl(url, {
       filter: 'audioonly',
-      quality: 'highestaudio',
+      quality: 'lowest',
     });
     const resource = createAudioResource(stream, {
       inputType: StreamType.Arbitrary,

@@ -5,4 +5,5 @@ export enum GroovyCommand {
   Stop = 'sus-bre',
   SkipSong = 'sledeca',
   SurpriseMe = 'bicu-poznata',
+  KolkuVistiniIma = 'kolku-vistini-ima',
 }

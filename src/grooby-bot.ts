@@ -37,6 +37,8 @@ export class GroobyBot {
         youtubeUrl ? youtubeUrl : 'https://youtube.com/watch?v=Zffe_CsJQSA'
       )
     );
+
+    return youtubeUrl;
   }
 
   /**

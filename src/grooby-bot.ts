@@ -46,6 +46,6 @@ export class GroobyBot {
    * @returns The first Guild found on the server.
    */
   async getMainGuild() {
-    return this.discordClient.guilds.cache.first();
+    return (await this.discordClient.guilds.fetch()).first()?.fetch();
   }
 }

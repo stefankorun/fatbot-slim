@@ -22,7 +22,8 @@ export class MusicQueue {
     this.musicPlayer.audioPlayerErrorCallback = (error) => {
       if (error instanceof AudioPlayerError && error.message === 'aborted') {
         console.warn('Audio played disconnected, playing next sond.', error);
-        this.musicPlayer.currentSubscription?.player.play(error.resource);
+        this.musicPlayer.pause();
+        this.musicPlayer.resume();
       }
     };
   }

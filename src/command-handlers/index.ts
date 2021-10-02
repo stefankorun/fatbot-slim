@@ -5,6 +5,7 @@ import { PlayHandler } from './play-handler';
 import { ResumeHandler } from './resume-handler';
 import { SkipSongHandler } from './skip-song-handler';
 import { StopHandler } from './stop-handler';
+import { ShowQueueHandler } from './show-queue';
 
 export default [
   IWillBeFamousHandler.commandData,
@@ -14,4 +15,5 @@ export default [
   PlayHandler.commandData,
   PauseHandler.commandData,
   ResumeHandler.commandData,
+  ShowQueueHandler.commandData,
 ];

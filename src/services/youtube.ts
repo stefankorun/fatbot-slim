@@ -1,5 +1,7 @@
-import { singleton } from 'tsyringe';
 import got from 'got';
+import { singleton } from 'tsyringe';
+import ytdl from 'ytdl-core';
+import { Track } from '../music-queue';
 import { ConfigurationService } from './configuration';
 
 const DUMB_URL_REGEX = /(https?:\/\/)|(www\.)([\w-\?\.])+$/;
@@ -24,10 +26,18 @@ export class YoutubeService {
     return res.items[0] ? `https://youtu.be/${res.items[0].id.videoId}` : null;
   }
 
-  async parse(candidate: string) {
-    const youtubeUrlRegexMatch = candidate.match(YOUTUBE_URL_REGEX);
-    if (youtubeUrlRegexMatch != null) {
-      return `https://${youtubeUrlRegexMatch[3]}`;
+  async parse(candidate: string): Promise<Track> {
+    // const youtubeUrlRegexMatch = candidate.match(YOUTUBE_URL_REGEX);
+    // if (youtubeUrlRegexMatch != null) {
+    //   return `https://${youtubeUrlRegexMatch[3]}`;
+    // }
+
+    if (ytdl.validateURL(candidate)) {
+      const info = await ytdl.getInfo(candidate);
+      return {
+        name: info.videoDetails.title,
+        url: info.videoDetails.video_url,
+      };
     }
 
     const dumbUrlRegexMatch = candidate.match(DUMB_URL_REGEX);
@@ -35,11 +45,20 @@ export class YoutubeService {
       throw new Error('Working only with youtube urls at the moment.');
     }
 
+    let url: string | null;
     try {
-      return this.searchYoutube(candidate);
+      url = await this.searchYoutube(candidate);
+      if (url == null) throw new Error('just go into catch');
     } catch (e) {
       throw new Error('Could not find youtube video.');
     }
+
+    // TODO: There is a double API call here for no reason, we could easily get the data from the YT API by using, `part: snippet`
+    const info = await ytdl.getInfo(url);
+    return {
+      name: info.videoDetails.title,
+      url: info.videoDetails.video_url,
+    };
   }
 }
 

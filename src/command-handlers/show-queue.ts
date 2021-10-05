@@ -17,11 +17,13 @@ export class ShowQueueHandler implements CommandHandler<CommandInteraction> {
       ? [this.musicQueue.nowPlaying, ...this.musicQueue.queue]
       : this.musicQueue.queue;
 
-    await command.payload.reply({
-      content: `Sviram: ${queue.map(
-        (song, index) => `\n ${index + 1}. ${song?.name} \n\t\t(<${song?.url}>)`
-      )}`,
-      embeds: [],
-    });
+    await command.payload.reply(
+      queue && queue.length > 0
+        ? `Sviram: ${queue.map(
+            (song, index) =>
+              `\n ${index + 1}. ${song?.name} \n\t\t(<${song?.url}>)`
+          )}`
+        : 'Cutam'
+    );
   }
 }

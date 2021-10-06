@@ -14,7 +14,7 @@ const YOUTUBE_API_URL = 'https://youtube.googleapis.com/youtube/v3';
 export class YoutubeService {
   constructor(private config: ConfigurationService) {}
 
-  async searchYoutube(query: string) {
+  async searchYoutube(query: string): Promise<Track> {
     const res = await got
       .get({
         url: `${YOUTUBE_API_URL}/search?part=snippet&maxResults=1&q=${query}&regionCode=US&type=video&videoCategoryId=10&key=${this.config.get(
@@ -23,15 +23,16 @@ export class YoutubeService {
       })
       .json<YoutubeSearchResults>();
 
-    return res.items[0] ? `https://youtu.be/${res.items[0].id.videoId}` : null;
+    const searchResult = res.items[0];
+    if (searchResult == null) throw new Error('No results from youtube API');
+
+    return new Track(
+      `https://youtu.be/${searchResult.id.videoId}`,
+      searchResult.snippet.title
+    );
   }
 
   async parse(candidate: string): Promise<Track> {
-    // const youtubeUrlRegexMatch = candidate.match(YOUTUBE_URL_REGEX);
-    // if (youtubeUrlRegexMatch != null) {
-    //   return `https://${youtubeUrlRegexMatch[3]}`;
-    // }
-
     if (ytdl.validateURL(candidate)) {
       const info = await ytdl.getInfo(candidate);
       return {
@@ -45,21 +46,10 @@ export class YoutubeService {
       throw new Error('Working only with youtube urls at the moment.');
     }
 
-    let url: string | null;
-    try {
-      url = await this.searchYoutube(candidate);
-      if (url == null) throw new Error('just go into catch');
-    } catch (e) {
-      throw new Error('Could not find youtube video.');
-    }
-
-    // TODO: There is a double API call here for no reason, we could easily get the data from the YT API by using, `part: snippet`
-    const info = await ytdl.getInfo(url);
-    return {
-      name: info.videoDetails.title,
-      url: info.videoDetails.video_url,
-    };
+    return await this.searchYoutube(candidate);
   }
 }
 
-type YoutubeSearchResults = { items: Array<{ id: { videoId: string } }> };
+type YoutubeSearchResults = {
+  items: Array<{ id: { videoId: string }; snippet: { title: string } }>;
+};

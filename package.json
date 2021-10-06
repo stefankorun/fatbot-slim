@@ -19,7 +19,7 @@
     "@abraham/reflection": "^0.8.0",
     "@discordjs/opus": "^0.6.0",
     "@discordjs/voice": "^0.6.0",
-    "discord.js": "^13.1.0",
+    "discord.js": "^13.2.0",
     "dotenv": "^10.0.0",
     "ffmpeg": "^0.0.4",
     "ffmpeg-static": "^4.4.0",

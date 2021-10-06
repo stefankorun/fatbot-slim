@@ -1,5 +1,7 @@
-import { singleton } from 'tsyringe';
 import got from 'got';
+import { singleton } from 'tsyringe';
+import ytdl from 'ytdl-core';
+import { Track } from '../music-queue';
 import { ConfigurationService } from './configuration';
 
 const DUMB_URL_REGEX = /(https?:\/\/)|(www\.)([\w-\?\.])+$/;
@@ -12,7 +14,7 @@ const YOUTUBE_API_URL = 'https://youtube.googleapis.com/youtube/v3';
 export class YoutubeService {
   constructor(private config: ConfigurationService) {}
 
-  async searchYoutube(query: string) {
+  async searchYoutube(query: string): Promise<Track> {
     const res = await got
       .get({
         url: `${YOUTUBE_API_URL}/search?part=snippet&maxResults=1&q=${query}&regionCode=US&type=video&videoCategoryId=10&key=${this.config.get(
@@ -21,13 +23,22 @@ export class YoutubeService {
       })
       .json<YoutubeSearchResults>();
 
-    return res.items[0] ? `https://youtu.be/${res.items[0].id.videoId}` : null;
+    const searchResult = res.items[0];
+    if (searchResult == null) throw new Error('No results from youtube API');
+
+    return new Track(
+      `https://youtu.be/${searchResult.id.videoId}`,
+      searchResult.snippet.title
+    );
   }
 
-  async parse(candidate: string) {
-    const youtubeUrlRegexMatch = candidate.match(YOUTUBE_URL_REGEX);
-    if (youtubeUrlRegexMatch != null) {
-      return `https://${youtubeUrlRegexMatch[3]}`;
+  async parse(candidate: string): Promise<Track> {
+    if (ytdl.validateURL(candidate)) {
+      const info = await ytdl.getInfo(candidate);
+      return {
+        name: info.videoDetails.title,
+        url: info.videoDetails.video_url,
+      };
     }
 
     const dumbUrlRegexMatch = candidate.match(DUMB_URL_REGEX);
@@ -35,12 +46,10 @@ export class YoutubeService {
       throw new Error('Working only with youtube urls at the moment.');
     }
 
-    try {
-      return this.searchYoutube(candidate);
-    } catch (e) {
-      throw new Error('Could not find youtube video.');
-    }
+    return await this.searchYoutube(candidate);
   }
 }
 
-type YoutubeSearchResults = { items: Array<{ id: { videoId: string } }> };
+type YoutubeSearchResults = {
+  items: Array<{ id: { videoId: string }; snippet: { title: string } }>;
+};

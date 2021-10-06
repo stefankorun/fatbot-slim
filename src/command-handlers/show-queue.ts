@@ -13,10 +13,17 @@ export class ShowQueueHandler implements CommandHandler<CommandInteraction> {
   constructor(private musicQueue: MusicQueue) {}
 
   async handle(command: Command<CommandInteraction>) {
-    const queue = [this.musicQueue.nowPlaying, ...this.musicQueue.queue];
+    const queue = this.musicQueue.nowPlaying
+      ? [this.musicQueue.nowPlaying, ...this.musicQueue.queue]
+      : this.musicQueue.queue;
 
     await command.payload.reply(
-      `Sviram: ${queue.map((song, index) => `\n ${index + 1}. ${song?.url}`)}`
+      queue && queue.length > 0
+        ? `Sviram: ${queue.map(
+            (song, index) =>
+              `\n ${index + 1}. ${song?.name} \n\t\t(<${song?.url}>)`
+          )}`
+        : 'Cutam'
     );
   }
 }

@@ -50,6 +50,6 @@ export class PlayHandler implements CommandHandler {
       return interaction.reply('Song query must not be empty.');
 
     const song = await this.groobyBot.queueSong(songQuery);
-    await interaction.reply(`E sviram ${song}`);
+    await interaction.reply(`Ja kladov ${song.url}`);
   }
 }

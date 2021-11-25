@@ -7,31 +7,32 @@
   "main": "index.ts",
   "engines": {
     "node": "16.x",
-    "npm": "7.x"
+    "npm": "8.x"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc --build --clean && tsc --extendedDiagnostics",
     "start": "node ./dist/index.js",
-    "dev": "ts-node-dev --respawn ./src/index.ts"
+    "dev": "node-dev --respawn ./src/index.ts"
   },
   "dependencies": {
     "@abraham/reflection": "^0.8.0",
-    "@discordjs/opus": "^0.6.0",
-    "@discordjs/voice": "^0.6.0",
-    "discord.js": "^13.2.0",
+    "@discordjs/opus": "^0.7.0",
+    "@discordjs/voice": "^0.7.5",
+    "discord.js": "^13.3.1",
     "dotenv": "^10.0.0",
     "ffmpeg": "^0.0.4",
     "ffmpeg-static": "^4.4.0",
     "fluent-ffmpeg": "^2.1.2",
-    "got": "^11.8.2",
+    "got": "^11.8.3",
     "libsodium-wrappers": "^0.7.9",
     "tsyringe": "^4.6.0",
-    "typescript": "^4.4.3",
+    "typescript": "^4.5.2",
     "ytdl-core": "^4.9.1"
   },
   "devDependencies": {
-    "prettier": "^2.4.1",
-    "ts-node-dev": "^1.1.8"
+    "node-dev": "^7.1.0",
+    "prettier": "^2.5.0",
+    "ts-node": "^10.4.0"
   }
 }

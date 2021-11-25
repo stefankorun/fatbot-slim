@@ -16,7 +16,7 @@ export class MusicPlayer {
   static AudioPlayer = createAudioPlayer();
   currentSubscription?: PlayerSubscription;
 
-  /** Refactor events to a better EventEmmiter structure */
+  /** Refactor events to a better EventEmitter structure */
   public songEndedCallback?: () => void;
   public audioPlayerErrorCallback?: (error: AudioPlayerError) => void;
 
@@ -48,7 +48,6 @@ export class MusicPlayer {
   playYoutubeVideo(url: string) {
     const stream = ytdl(url, {
       filter: 'audioonly',
-      quality: 'lowest',
     });
     const resource = createAudioResource(stream, {
       inputType: StreamType.Arbitrary,

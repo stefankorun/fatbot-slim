@@ -6,7 +6,7 @@
   "author": "Stefan K",
   "main": "index.ts",
   "engines": {
-    "node": "16.x",
+    "node": "17.x",
     "npm": "8.x"
   },
   "scripts": {
@@ -19,7 +19,7 @@
     "@abraham/reflection": "^0.8.0",
     "@discordjs/opus": "^0.7.0",
     "@discordjs/voice": "^0.7.5",
-    "discord.js": "^13.3.1",
+    "discord.js": "^13.5.0",
     "dotenv": "^10.0.0",
     "ffmpeg": "^0.0.4",
     "ffmpeg-static": "^4.4.0",

@@ -4,12 +4,7 @@ import {
   joinVoiceChannel,
   VoiceConnectionStatus,
 } from '@discordjs/voice';
-import {
-  Channel,
-  StageChannel,
-  TextBasedChannels,
-  VoiceChannel,
-} from 'discord.js';
+import { VoiceChannel } from 'discord.js';
 import { singleton } from 'tsyringe';
 
 @singleton()

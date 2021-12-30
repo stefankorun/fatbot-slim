@@ -25,7 +25,7 @@ export class InteractionHandler {
   async handle(interaction: Interaction) {
     if (!interaction.isCommand() || !interaction.guildId) return;
 
-    this.commandBus.execute({
+    return await this.commandBus.execute({
       type: interaction.commandName.replace(
         `${this.config.get('DISCORD_PREFIX')}_`,
         ''

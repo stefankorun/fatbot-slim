@@ -18,19 +18,19 @@
   "dependencies": {
     "@abraham/reflection": "^0.8.0",
     "@discordjs/opus": "^0.7.0",
-    "@discordjs/voice": "^0.7.5",
-    "@sentry/node": "^6.16.1",
-    "@sentry/tracing": "^6.16.1",
-    "discord.js": "^13.5.0",
-    "dotenv": "^10.0.0",
+    "@discordjs/voice": "^0.8.0",
+    "@sentry/node": "^6.17.3",
+    "@sentry/tracing": "^6.17.3",
+    "discord.js": "^13.6.0",
+    "dotenv": "^14.3.2",
     "ffmpeg": "^0.0.4",
-    "ffmpeg-static": "^4.4.0",
+    "ffmpeg-static": "^4.4.1",
     "fluent-ffmpeg": "^2.1.2",
     "got": "^11.8.3",
     "libsodium-wrappers": "^0.7.9",
     "tsyringe": "^4.6.0",
-    "typescript": "^4.5.4",
-    "ytdl-core": "^4.9.2"
+    "typescript": "^4.5.5",
+    "ytdl-core": "^4.10.0"
   },
   "devDependencies": {
     "node-dev": "^7.1.0",

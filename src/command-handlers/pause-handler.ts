@@ -7,11 +7,10 @@ import { MusicPlayer } from '../music-player';
 export class PauseHandler implements CommandHandler {
   static readonly commandData: ApplicationCommandData = {
     name: GroovyCommand.Pause,
-    description: 'Pauses the player'
+    description: 'Pauses the player',
   };
 
-  constructor(private readonly musicPlayer: MusicPlayer) {
-  }
+  constructor(private readonly musicPlayer: MusicPlayer) {}
 
   async handle(command: Command<CommandInteraction>) {
     await this.musicPlayer.pause();

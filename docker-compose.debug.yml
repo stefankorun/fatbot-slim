@@ -10,4 +10,4 @@ services:
       NODE_ENV: development
     ports:
       - 9229:9229
-    command: ["node", "--inspect=0.0.0.0:9229", "index.ts"]
+    command: ['node', '--inspect=0.0.0.0:9229', 'index.ts']

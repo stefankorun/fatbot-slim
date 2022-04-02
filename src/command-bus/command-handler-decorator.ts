@@ -12,10 +12,8 @@ type constructor<T> = {
 export function commandHandler<T extends CommandHandler<any>>(
   commandType: string
 ): (target: constructor<T>) => void {
-  return function(target: constructor<T>): void {
+  return function (target: constructor<T>): void {
     injectable()(target);
     container.register(commandType, target);
   };
 }
-
-

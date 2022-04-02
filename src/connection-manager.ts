@@ -13,8 +13,7 @@ export class ConnectionManager {
     const connection = joinVoiceChannel({
       channelId: channel.id,
       guildId: channel.guild.id,
-      adapterCreator: channel.guild
-        .voiceAdapterCreator as DiscordGatewayAdapterCreator, // FIXME: This cast
+      adapterCreator: channel.guild.voiceAdapterCreator,
     });
 
     try {

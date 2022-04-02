@@ -32,7 +32,7 @@ export class GroobyBot {
   async queueSong(query: string) {
     const youtubeTrack = await this.youtubeService.parse(query);
 
-    this.musicQueue.push(youtubeTrack);
+    this.musicQueue.addTrack(youtubeTrack);
 
     return youtubeTrack;
   }

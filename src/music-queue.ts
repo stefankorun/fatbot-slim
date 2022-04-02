@@ -9,59 +9,54 @@ export class Track {
 @singleton()
 export class MusicQueue {
   queue = new Array<Track>();
-  nowPlaying?: Track;
+  nowPlayingIndex?: number;
+
+  get nowPlaying(): Track | undefined {
+    return this.nowPlayingIndex != null
+      ? this.queue[this.nowPlayingIndex]
+      : undefined;
+  }
 
   constructor(private musicPlayer: MusicPlayer) {
     this.musicPlayer.songEndedCallback = () => {
-      this.nowPlaying = undefined;
-      this.updateQueue();
+      this.playNextSong();
     };
 
-    // FIXME: Potential infinite loop,
-    // when sending invalid resource instead of handling network error.
     this.musicPlayer.audioPlayerErrorCallback = (error) => {
       if (error instanceof AudioPlayerError && error.message === 'aborted') {
-        console.warn('Audio played disconnected, playing next sond.', error);
-        this.musicPlayer.pause();
-        this.musicPlayer.resume();
+        console.warn(
+          'Audio played disconnected, restarting current song.',
+          error
+        );
+        this.playCurrentSong();
       }
     };
   }
 
-  push(track: Track) {
-    this.queue.push(track);
-    this.updateQueue();
-  }
-
-  updateQueue() {
-    if (this.size() === 0) return;
-
-    if (this.nowPlaying == null) {
-      console.log('Playing next song');
-      this.playNext();
-    }
-  }
-
   clear() {
     this.queue = new Array<Track>();
-    this.nowPlaying = undefined;
+    this.nowPlayingIndex = undefined;
     this.musicPlayer.stop();
-    this.musicPlayer.disconnect();
   }
 
-  skip(count = 1) {
-    if (this.size() > 0 && count <= this.size()) {
-      this.queue = this.queue.slice(count - 1, this.size());
-      this.playNext();
+  addTrack(track: Track) {
+    this.queue.push(track);
+    if (this.nowPlayingIndex === undefined) this.playNextSong();
+  }
+
+  playNextSong(skip = 1) {
+    const skipToSong =
+      this.nowPlayingIndex != null ? this.nowPlayingIndex + skip : 0;
+
+    if (skipToSong >= this.queue.length) {
+      return this.clear();
     }
+
+    this.nowPlayingIndex = skipToSong;
+    this.playCurrentSong();
   }
 
-  private size() {
-    return this.queue.length;
-  }
-
-  private playNext() {
-    this.nowPlaying = this.queue.shift();
+  private playCurrentSong() {
     this.nowPlaying && this.musicPlayer.playYoutubeVideo(this.nowPlaying.url);
   }
 }

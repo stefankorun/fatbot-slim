@@ -21,7 +21,7 @@ export class SkipSongHandler implements CommandHandler<CommandInteraction> {
   constructor(private readonly musicQueue: MusicQueue) {}
 
   async handle({ payload }: Command<CommandInteraction>) {
-    this.musicQueue.skip(this.skipCount(payload));
+    this.musicQueue.playNextSong(this.skipCount(payload));
     await payload.reply('Samo napred');
   }
 

@@ -7,11 +7,10 @@ import { MusicQueue } from '../music-queue';
 export class StopHandler implements CommandHandler<CommandInteraction> {
   static readonly commandData: ApplicationCommandData = {
     name: GroovyCommand.Stop,
-    description: 'Stops the music'
+    description: 'Stops the music',
   };
 
-  constructor(private readonly musicQueue: MusicQueue) {
-  }
+  constructor(private readonly musicQueue: MusicQueue) {}
 
   async handle(command: Command<CommandInteraction>) {
     this.musicQueue.clear();

@@ -1,7 +1,13 @@
 import { Command, commandHandler, CommandHandler } from '../command-bus';
-import { MusicQueue } from '../music-queue';
+import { MusicQueue, Track } from '../music-queue';
 import { ApplicationCommandData, CommandInteraction } from 'discord.js';
 import { GroovyCommand } from './groovy-command';
+
+interface TrackQueueDisplay {
+  name: string;
+  index: number;
+  isNowPlaying: boolean;
+}
 
 @commandHandler(GroovyCommand.ShowQueue)
 export class ShowQueueHandler implements CommandHandler<CommandInteraction> {
@@ -13,17 +19,36 @@ export class ShowQueueHandler implements CommandHandler<CommandInteraction> {
   constructor(private musicQueue: MusicQueue) {}
 
   async handle(command: Command<CommandInteraction>) {
-    const queue = this.musicQueue.nowPlaying
-      ? [this.musicQueue.nowPlaying, ...this.musicQueue.queue]
-      : this.musicQueue.queue;
-
-    await command.payload.reply(
-      queue && queue.length > 0
-        ? `Sviram: ${queue.map(
-            (song, index) =>
-              `\n ${index + 1}. ${song?.name} \n\t\t(<${song?.url}>)`
-          )}`
-        : 'Cutam'
+    const queueListMessage = this.tracksToDiscordMessage(
+      this.generateQueueList()
     );
+
+    await command.payload.reply(queueListMessage);
+  }
+
+  generateQueueList(): TrackQueueDisplay[] {
+    const NUMBER_OF_PREVIOUS_SONGS = 3;
+
+    const queue = this.musicQueue.queue;
+    const safeNowPlayingIndex = this.musicQueue.nowPlayingIndex ?? 0;
+
+    const queueToShow = queue.slice(
+      Math.max(0, safeNowPlayingIndex - NUMBER_OF_PREVIOUS_SONGS)
+    );
+
+    return queueToShow.map((track) => ({
+      name: track.name ?? 'n/a',
+      index: queue.indexOf(track) + 1,
+      isNowPlaying: queue.indexOf(track) === safeNowPlayingIndex,
+    }));
+  }
+
+  tracksToDiscordMessage(tracks: TrackQueueDisplay[]) {
+    const tracksText = tracks
+      .map((t) => `${t.isNowPlaying ? '🎸' : t.index}) ${t.name}\n\n`)
+      .join('');
+
+    return `\`\`\`
+${tracksText}\`\`\``;
   }
 }

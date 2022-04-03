@@ -1,9 +1,13 @@
+import {
+  entersState,
+  joinVoiceChannel,
+  VoiceConnectionStatus,
+} from '@discordjs/voice';
 import { GuildMember, VoiceChannel } from 'discord.js';
 import { singleton } from 'tsyringe';
-import { ConnectionManager } from './connection-manager';
 import { DiscordClient } from './discord-client';
 import { MusicPlayer } from './music-player';
-import { MusicQueue, Track } from './music-queue';
+import { MusicQueue } from './music-queue';
 import { YoutubeService } from './services/youtube';
 
 @singleton()
@@ -11,10 +15,25 @@ export class GroobyBot {
   constructor(
     private discordClient: DiscordClient,
     private youtubeService: YoutubeService,
-    private connectionManager: ConnectionManager,
     private musicQueue: MusicQueue,
     private musicPlayer: MusicPlayer
   ) {}
+
+  async connectToChannel(channel: VoiceChannel) {
+    const connection = joinVoiceChannel({
+      channelId: channel.id,
+      guildId: channel.guild.id,
+      adapterCreator: channel.guild.voiceAdapterCreator,
+    });
+
+    try {
+      await entersState(connection, VoiceConnectionStatus.Ready, 30e3);
+      return connection;
+    } catch (error) {
+      connection.destroy();
+      throw error;
+    }
+  }
 
   async connectToMemberVoiceChannel(member: GuildMember) {
     const voiceChannel = member?.voice.channel;
@@ -22,9 +41,7 @@ export class GroobyBot {
     if (!(voiceChannel instanceof VoiceChannel)) {
       return null;
     }
-    const connection = await this.connectionManager.connectToChannel(
-      voiceChannel
-    );
+    const connection = await this.connectToChannel(voiceChannel);
     this.musicPlayer.subscribeToConnection(connection);
     return connection;
   }

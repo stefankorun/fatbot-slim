@@ -46,9 +46,13 @@ export class MusicPlayer {
   }
 
   playYoutubeVideo(url: string) {
+    // `ytdl` settings taken from https://github.com/fent/node-ytdl-core/issues/902#issuecomment-1086880966
     const stream = ytdl(url, {
       filter: 'audioonly',
       quality: 'lowestaudio',
+      highWaterMark: 1 << 62,
+      liveBuffer: 1 << 62,
+      dlChunkSize: 0,
     });
     const resource = createAudioResource(stream, {
       inputType: StreamType.Arbitrary,

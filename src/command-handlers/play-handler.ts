@@ -1,13 +1,11 @@
-import { GroovyCommand } from './groovy-command';
-import { Command, commandHandler, CommandHandler } from '../command-bus';
 import {
   ApplicationCommandData,
   CommandInteraction,
   GuildMember,
-  Message,
 } from 'discord.js';
+import { Command, commandHandler, CommandHandler } from '../command-bus';
 import { GroobyBot } from '../grooby-bot';
-import { ApplicationCommandOptionTypes } from 'discord.js/typings/enums';
+import { GroovyCommand } from './groovy-command';
 
 @commandHandler(GroovyCommand.Play)
 export class PlayHandler implements CommandHandler {
@@ -39,17 +37,26 @@ export class PlayHandler implements CommandHandler {
       throw new Error('Command should be invoked in a Guild.');
     }
 
+    await interaction.deferReply();
+
     const connection = await this.groobyBot.connectToMemberVoiceChannel(
       interaction.member
     );
-    if (connection == null)
+    if (connection == null) {
       return interaction.reply('Need to join a voice channel first.');
+    }
 
     const songQuery = interaction.options.getString('pesna');
-    if (songQuery == null)
+    if (songQuery == null) {
       return interaction.reply('Song query must not be empty.');
+    }
 
-    const song = await this.groobyBot.queueSong(songQuery);
-    await interaction.reply(`Ja kladov ${song.url}`);
+    const songs = await this.groobyBot.queueSong(songQuery);
+    await interaction.editReply(
+      `Added ${songs[0]?.url}` +
+        (songs.length > 1
+          ? ` and a playlist of ${songs.length - 1} others`
+          : '')
+    );
   }
 }

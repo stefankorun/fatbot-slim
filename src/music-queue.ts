@@ -39,8 +39,8 @@ export class MusicQueue {
     this.musicPlayer.stop();
   }
 
-  addTrack(track: Track) {
-    this.queue.push(track);
+  addTracks(tracks: Track[]) {
+    this.queue.push(...tracks);
     if (this.nowPlayingIndex === undefined) this.playNextSong();
   }
 

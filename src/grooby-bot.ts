@@ -47,11 +47,11 @@ export class GroobyBot {
   }
 
   async queueSong(query: string) {
-    const youtubeTrack = await this.youtubeService.parse(query);
+    const youtubeTracks = await this.youtubeService.parse(query);
 
-    this.musicQueue.addTrack(youtubeTrack);
+    this.musicQueue.addTracks(youtubeTracks);
 
-    return youtubeTrack;
+    return youtubeTracks;
   }
 
   /**

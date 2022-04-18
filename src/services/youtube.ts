@@ -1,6 +1,7 @@
 import got from 'got';
 import { singleton } from 'tsyringe';
 import ytdl from 'ytdl-core';
+import ytpl from 'ytpl';
 import { Track } from '../music-queue';
 import { ConfigurationService } from './configuration';
 
@@ -14,7 +15,16 @@ const YOUTUBE_API_URL = 'https://youtube.googleapis.com/youtube/v3';
 export class YoutubeService {
   constructor(private config: ConfigurationService) {}
 
-  async searchYoutube(query: string): Promise<Track> {
+  private playlistToTracks(playlist: ytpl.Result): Track[] {
+    return playlist.items.map((item) => {
+      return {
+        name: item.title,
+        url: item.shortUrl,
+      };
+    });
+  }
+
+  private async searchForVideo(query: string): Promise<Track> {
     const res = await got
       .get({
         url: `${YOUTUBE_API_URL}/search?part=snippet&maxResults=1&q=${query}&regionCode=US&type=video&videoCategoryId=10&key=${this.config.get(
@@ -32,21 +42,30 @@ export class YoutubeService {
     );
   }
 
-  async parse(candidate: string): Promise<Track> {
+  async parse(candidate: string): Promise<Track[]> {
+    if (ytpl.validateID(candidate)) {
+      const playlistData = await ytpl(candidate, {
+        limit: 15,
+      });
+
+      return this.playlistToTracks(playlistData);
+    }
+
     if (ytdl.validateURL(candidate)) {
       const info = await ytdl.getInfo(candidate);
-      return {
-        name: info.videoDetails.title,
-        url: info.videoDetails.video_url,
-      };
+      return [
+        {
+          name: info.videoDetails.title,
+          url: info.videoDetails.video_url,
+        },
+      ];
     }
 
-    const dumbUrlRegexMatch = candidate.match(DUMB_URL_REGEX);
-    if (dumbUrlRegexMatch != null) {
-      throw new Error('Working only with youtube urls at the moment.');
+    if (candidate.match(DUMB_URL_REGEX) == null) {
+      return [await this.searchForVideo(candidate)];
     }
 
-    return await this.searchYoutube(candidate);
+    throw new Error('Working only with Youtube urls at the moment.');
   }
 }
 

@@ -21,15 +21,18 @@ export class MusicPlayer {
   public audioPlayerErrorCallback?: (error: AudioPlayerError) => void;
 
   constructor() {
-    MusicPlayer.AudioPlayer.on('stateChange', (oldState, newState) => {
-      if (
-        oldState.status === AudioPlayerStatus.Playing &&
-        newState.status === AudioPlayerStatus.Idle
-      ) {
-        console.log('Song ended!');
-        this.songEndedCallback?.();
+    MusicPlayer.AudioPlayer.on<'stateChange'>(
+      'stateChange',
+      (oldState, newState) => {
+        if (
+          oldState.status === AudioPlayerStatus.Playing &&
+          newState.status === AudioPlayerStatus.Idle
+        ) {
+          console.log('Song ended!');
+          this.songEndedCallback?.();
+        }
       }
-    });
+    );
 
     MusicPlayer.AudioPlayer.on('error', (error) =>
       this.audioPlayerErrorCallback?.(error)

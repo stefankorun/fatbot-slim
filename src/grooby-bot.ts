@@ -1,4 +1,5 @@
 import {
+  DiscordGatewayAdapterCreator,
   entersState,
   joinVoiceChannel,
   VoiceConnectionStatus,
@@ -23,7 +24,8 @@ export class GroobyBot {
     const connection = joinVoiceChannel({
       channelId: channel.id,
       guildId: channel.guild.id,
-      adapterCreator: channel.guild.voiceAdapterCreator,
+      adapterCreator: channel.guild
+        .voiceAdapterCreator as DiscordGatewayAdapterCreator,
     });
 
     try {

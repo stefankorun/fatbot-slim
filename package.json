@@ -23,7 +23,7 @@
     "@sentry/node": "^6.19.7",
     "@sentry/tracing": "^6.19.7",
     "discord.js": "^13.6.0",
-    "dotenv": "^16.0.0",
+    "dotenv": "^16.0.1",
     "ffmpeg": "^0.0.4",
     "ffmpeg-static": "^5.0.0",
     "fluent-ffmpeg": "^2.1.2",

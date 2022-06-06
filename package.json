@@ -19,7 +19,7 @@
   "dependencies": {
     "@abraham/reflection": "^0.10.0",
     "@discordjs/opus": "^0.7.0",
-    "@discordjs/voice": "^0.8.0",
+    "@discordjs/voice": "^0.10.0",
     "@sentry/node": "^6.19.7",
     "@sentry/tracing": "^6.19.7",
     "discord.js": "^13.6.0",

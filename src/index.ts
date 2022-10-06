@@ -1,4 +1,4 @@
-import '@abraham/reflection';
+import 'reflect-metadata';
 import * as Sentry from '@sentry/node';
 import { container, singleton } from 'tsyringe';
 import { CommandBus } from './command-bus';

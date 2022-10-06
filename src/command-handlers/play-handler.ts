@@ -1,5 +1,6 @@
 import {
   ApplicationCommandData,
+  ApplicationCommandOptionType,
   CommandInteraction,
   GuildMember,
 } from 'discord.js';
@@ -16,7 +17,7 @@ export class PlayHandler implements CommandHandler {
       {
         name: 'pesna',
         description: 'Song url or search string',
-        type: 'STRING',
+        type: ApplicationCommandOptionType.String,
         required: true,
       },
     ],
@@ -32,9 +33,12 @@ export class PlayHandler implements CommandHandler {
 
     if (
       interaction.inGuild() == false ||
-      !(interaction.member instanceof GuildMember)
+      !(interaction.member instanceof GuildMember) ||
+      !interaction.isChatInputCommand()
     ) {
-      throw new Error('Command should be invoked in a Guild.');
+      throw new Error(
+        'Command should be invoked in a Guild, and be of type `ChatInputCommand`'
+      );
     }
 
     await interaction.deferReply();

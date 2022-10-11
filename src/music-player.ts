@@ -8,6 +8,7 @@ import {
   StreamType,
   VoiceConnection,
 } from '@discordjs/voice';
+import EventEmitter from 'events';
 import { singleton } from 'tsyringe';
 import ytdl from 'ytdl-core';
 
@@ -16,9 +17,7 @@ export class MusicPlayer {
   static AudioPlayer = createAudioPlayer();
   currentSubscription?: PlayerSubscription;
 
-  /** Refactor events to a better EventEmitter structure */
-  public songEndedCallback?: () => void;
-  public audioPlayerErrorCallback?: (error: AudioPlayerError) => void;
+  public events = new EventEmitter();
 
   constructor() {
     MusicPlayer.AudioPlayer.on('stateChange', (oldState, newState) => {
@@ -27,12 +26,13 @@ export class MusicPlayer {
         newState.status === AudioPlayerStatus.Idle
       ) {
         console.log('Song ended!');
-        this.songEndedCallback?.();
+        this.events.emit('song:ended');
       }
     });
 
-    MusicPlayer.AudioPlayer.on('error', (error) =>
-      this.audioPlayerErrorCallback?.(error)
+    MusicPlayer.AudioPlayer.on(
+      'error',
+      async (error) => (this.events.emit('audio:error', error), void 0)
     );
   }
 

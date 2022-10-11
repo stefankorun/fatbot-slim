@@ -18,11 +18,11 @@ export class MusicQueue {
   }
 
   constructor(private musicPlayer: MusicPlayer) {
-    this.musicPlayer.songEndedCallback = () => {
+    this.musicPlayer.events.on('song:ended', () => {
       this.playNextSong();
-    };
+    });
 
-    this.musicPlayer.audioPlayerErrorCallback = (error) => {
+    this.musicPlayer.events.on('audio:error', (error) => {
       if (error instanceof AudioPlayerError && error.message === 'aborted') {
         console.warn(
           'Audio played disconnected, restarting current song.',
@@ -30,7 +30,7 @@ export class MusicQueue {
         );
         this.playCurrentSong();
       }
-    };
+    });
   }
 
   clear() {

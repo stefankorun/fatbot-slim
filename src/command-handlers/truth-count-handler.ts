@@ -1,7 +1,7 @@
 import { Command, commandHandler, CommandHandler } from '../command-bus';
-import { GroobyBot } from '../grooby-bot';
 import { ApplicationCommandData, CommandInteraction } from 'discord.js';
 import { GroovyCommand } from './groovy-command';
+import { GroobyBot } from '../music/grooby-bot';
 
 @commandHandler(GroovyCommand.KolkuVistiniIma)
 export class TruthCountHandler implements CommandHandler<CommandInteraction> {

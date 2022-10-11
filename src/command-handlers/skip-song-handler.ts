@@ -6,7 +6,7 @@ import {
   ChatInputCommandInteraction,
   CommandInteraction,
 } from 'discord.js';
-import { MusicQueue } from '../music-queue';
+import { MusicQueue } from '../music/music-queue';
 
 @commandHandler(GroovyCommand.SkipSong)
 export class SkipSongHandler implements CommandHandler<CommandInteraction> {

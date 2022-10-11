@@ -1,7 +1,7 @@
 import { GroovyCommand } from './groovy-command';
 import { Command, commandHandler, CommandHandler } from '../command-bus';
 import { ApplicationCommandData, CommandInteraction } from 'discord.js';
-import { MusicPlayer } from '../music-player';
+import { MusicPlayer } from '../music/music-player';
 
 @commandHandler(GroovyCommand.Resume)
 export class ResumeHandler implements CommandHandler {

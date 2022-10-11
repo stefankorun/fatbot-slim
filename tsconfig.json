@@ -1,5 +1,4 @@
 {
-  "include": ["src/index.ts"],
   "compilerOptions": {
     "resolveJsonModule": true,
     /* Visit https://aka.ms/tsconfig.json to read more about thisfile */

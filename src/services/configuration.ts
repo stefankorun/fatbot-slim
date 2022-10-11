@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 import { singleton } from 'tsyringe';
 
-type EnvoirmentVariables =
+type EnvironmentVariables =
   | 'NODE_ENV'
   | 'SENTRY_DNS'
   | 'DISCORD_TOKEN'
@@ -11,7 +11,7 @@ type EnvoirmentVariables =
 
 @singleton()
 export class ConfigurationService {
-  get(key: EnvoirmentVariables) {
+  get(key: EnvironmentVariables) {
     return process.env[key];
   }
 }

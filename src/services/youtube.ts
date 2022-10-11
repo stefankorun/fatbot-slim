@@ -2,12 +2,10 @@ import got from 'got';
 import { singleton } from 'tsyringe';
 import ytdl from 'ytdl-core';
 import ytpl from 'ytpl';
-import { Track } from '../music-queue';
+import { Track } from '../music/music-queue';
 import { ConfigurationService } from './configuration';
 
 const DUMB_URL_REGEX = /(https?:\/\/)|(www\.)([\w-\?\.])+$/;
-const YOUTUBE_URL_REGEX =
-  /(https?\:\/\/)?(www\.)?((youtube\.com|youtu\.be)\/.+)$/;
 
 const YOUTUBE_API_URL = 'https://youtube.googleapis.com/youtube/v3';
 

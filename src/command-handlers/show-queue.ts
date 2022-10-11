@@ -1,7 +1,7 @@
 import { Command, commandHandler, CommandHandler } from '../command-bus';
-import { MusicQueue, Track } from '../music-queue';
 import { ApplicationCommandData, CommandInteraction } from 'discord.js';
 import { GroovyCommand } from './groovy-command';
+import { MusicQueue } from '../music/music-queue';
 
 interface TrackQueueDisplay {
   name: string;

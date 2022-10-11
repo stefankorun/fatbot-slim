@@ -1,9 +1,8 @@
 import 'reflect-metadata';
 import * as Sentry from '@sentry/node';
 import { container, singleton } from 'tsyringe';
-import { CommandBus } from './command-bus';
 import { DiscordClient } from './discord-client';
-import { GroobyBot } from './grooby-bot';
+import { GroobyBot } from './music/grooby-bot';
 import { InteractionHandler } from './interaction-handler';
 import { ConfigurationService } from './services/configuration';
 
@@ -13,7 +12,6 @@ class App {
     private discordClient: DiscordClient,
     private groobyBot: GroobyBot,
     private interactionHandler: InteractionHandler,
-    private commandBus: CommandBus,
     private configService: ConfigurationService
   ) {}
 
@@ -41,11 +39,6 @@ class App {
         throw e;
       }
     });
-
-    // Replay message on receive.
-    this.discordClient.on('messageCreate', async (message) =>
-      console.log('Received message:', message.content)
-    );
   }
 
   async registerSentry() {

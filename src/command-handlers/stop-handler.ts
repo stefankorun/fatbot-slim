@@ -1,7 +1,7 @@
 import { GroovyCommand } from './groovy-command';
 import { Command, commandHandler, CommandHandler } from '../command-bus';
 import { ApplicationCommandData, CommandInteraction } from 'discord.js';
-import { MusicQueue } from '../music-queue';
+import { MusicQueue } from '../music/music-queue';
 
 @commandHandler(GroovyCommand.Stop)
 export class StopHandler implements CommandHandler<CommandInteraction> {

@@ -5,7 +5,7 @@ import {
   GuildMember,
 } from 'discord.js';
 import { Command, commandHandler, CommandHandler } from '../command-bus';
-import { GroobyBot } from '../grooby-bot';
+import { GroobyBot } from '../music/grooby-bot';
 import { GroovyCommand } from './groovy-command';
 
 @commandHandler(GroovyCommand.Play)

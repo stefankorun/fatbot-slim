@@ -6,9 +6,9 @@ import {
 import { GuildMember, VoiceChannel } from 'discord.js';
 import { singleton } from 'tsyringe';
 import { DiscordClient } from '../discord-client';
+import { YoutubeService } from '../services/youtube';
 import { MusicPlayer } from './music-player';
 import { MusicQueue } from './music-queue';
-import { YoutubeService } from '../services/youtube';
 
 @singleton()
 export class GroobyBot {

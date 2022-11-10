@@ -22,7 +22,7 @@ export class YoutubeService {
     });
   }
 
-  private async searchForVideo(query: string): Promise<Track> {
+  private async searchForVideo(query: string): Promise<Track | undefined> {
     const res = await got
       .get({
         url: `${YOUTUBE_API_URL}/search?part=snippet&maxResults=1&q=${query}&regionCode=US&type=video&videoCategoryId=10&key=${this.config.get(
@@ -32,11 +32,13 @@ export class YoutubeService {
       .json<YoutubeSearchResults>();
 
     const searchResult = res.items[0];
-    if (searchResult == null) throw new Error('No results from youtube API');
 
-    return new Track(
-      `https://youtu.be/${searchResult.id.videoId}`,
-      searchResult.snippet.title
+    return (
+      searchResult &&
+      new Track(
+        `https://youtu.be/${searchResult.id.videoId}`,
+        searchResult.snippet.title
+      )
     );
   }
 
@@ -60,7 +62,8 @@ export class YoutubeService {
     }
 
     if (candidate.match(DUMB_URL_REGEX) == null) {
-      return [await this.searchForVideo(candidate)];
+      const nextSong = await this.searchForVideo(candidate);
+      return nextSong ? [nextSong] : [];
     }
 
     throw new Error('Working only with Youtube urls at the moment.');

@@ -27,6 +27,7 @@ export class PlayHandler implements CommandHandler {
 
   async handle(command: Command<CommandInteraction>) {
     const interaction = command.payload;
+    await interaction.deferReply();
 
     if (interaction?.member == null)
       throw new Error('Music command missing author.');
@@ -41,26 +42,27 @@ export class PlayHandler implements CommandHandler {
       );
     }
 
-    await interaction.deferReply();
-
     const connection = await this.groobyBot.connectToMemberVoiceChannel(
       interaction.member
     );
     if (connection == null) {
-      return interaction.reply('Need to join a voice channel first.');
+      return interaction.editReply('Need to join a voice channel first.');
     }
 
     const songQuery = interaction.options.getString('pesna');
     if (songQuery == null) {
-      return interaction.reply('Song query must not be empty.');
+      return interaction.editReply('Song query must not be empty.');
     }
 
+    interaction.editReply(`Searching for ${songQuery}`);
     const songs = await this.groobyBot.queueSong(songQuery);
     await interaction.editReply(
-      `Added ${songs[0]?.url}` +
-        (songs.length > 1
-          ? ` and a playlist of ${songs.length - 1} others`
-          : '')
+      songs[0]
+        ? `Searched: ${songQuery} \nAdded ${songs[0].url}` +
+            (songs.length > 1
+              ? ` and a playlist of ${songs.length - 1} others`
+              : '')
+        : `Could not find song: ${songQuery}`
     );
   }
 }

@@ -16,10 +16,27 @@ export class YoutubeService {
   private playlistToTracks(playlist: ytpl.Result): Track[] {
     return playlist.items.map((item) => {
       return {
+        remoteId: item.id,
         name: item.title,
         url: item.shortUrl,
       };
     });
+  }
+
+  async searchForSimilarVideos(videoId: string): Promise<Track[]> {
+    const res = await got
+      .get({
+        url: `${YOUTUBE_API_URL}/search?part=snippet&maxResults=3&relatedToVideoId=${videoId}&regionCode=US&type=video&videoCategoryId=10&key=${this.config.get(
+          'YOUTUBE_API_KEY'
+        )}`,
+      })
+      .json<YoutubeSearchResults>();
+
+    return res.items.map((searchResult) => ({
+      remoteId: searchResult.id.videoId,
+      name: searchResult.snippet.title,
+      url: `https://youtu.be/${searchResult.id.videoId}`,
+    }));
   }
 
   private async searchForVideo(query: string): Promise<Track | undefined> {
@@ -34,11 +51,11 @@ export class YoutubeService {
     const searchResult = res.items[0];
 
     return (
-      searchResult &&
-      new Track(
-        `https://youtu.be/${searchResult.id.videoId}`,
-        searchResult.snippet.title
-      )
+      searchResult && {
+        remoteId: searchResult.id.videoId,
+        name: searchResult.snippet.title,
+        url: `https://youtu.be/${searchResult.id.videoId}`,
+      }
     );
   }
 
@@ -55,6 +72,7 @@ export class YoutubeService {
       const info = await ytdl.getInfo(candidate);
       return [
         {
+          remoteId: info.videoDetails.videoId,
           name: info.videoDetails.title,
           url: info.videoDetails.video_url,
         },

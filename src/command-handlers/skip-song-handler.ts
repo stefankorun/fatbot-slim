@@ -1,12 +1,12 @@
-import { GroovyCommand } from './groovy-command';
-import { Command, commandHandler, CommandHandler } from '../command-bus';
 import {
   ApplicationCommandData,
   ApplicationCommandOptionType,
   ChatInputCommandInteraction,
   CommandInteraction,
 } from 'discord.js';
+import { Command, commandHandler, CommandHandler } from '../command-bus';
 import { MusicQueue } from '../music/music-queue';
+import { GroovyCommand } from './groovy-command';
 
 @commandHandler(GroovyCommand.SkipSong)
 export class SkipSongHandler implements CommandHandler<CommandInteraction> {
@@ -29,7 +29,7 @@ export class SkipSongHandler implements CommandHandler<CommandInteraction> {
     if (!payload.isChatInputCommand())
       throw new Error('Command should be of type `ChatInputCommand`');
 
-    this.musicQueue.playNextSong(this.skipCount(payload));
+    this.musicQueue.skipToNextSong(this.skipCount(payload));
     await payload.reply('Samo napred');
   }
 

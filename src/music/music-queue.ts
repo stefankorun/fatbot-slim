@@ -1,9 +1,14 @@
 import { AudioPlayerError } from '@discordjs/voice';
-import { singleton } from 'tsyringe';
+import { delay, inject, singleton } from 'tsyringe';
+import { YoutubeService } from '../services/youtube';
 import { MusicPlayer } from './music-player';
 
 export class Track {
-  constructor(public url: string, public name?: string) {}
+  constructor(
+    public remoteId: string,
+    public url: string,
+    public name?: string
+  ) {}
 }
 
 @singleton()
@@ -17,9 +22,12 @@ export class MusicQueue {
       : undefined;
   }
 
-  constructor(private musicPlayer: MusicPlayer) {
+  constructor(
+    private musicPlayer: MusicPlayer,
+    @inject(delay(() => YoutubeService)) private youtubeService: YoutubeService
+  ) {
     this.musicPlayer.events.on('song:ended', () => {
-      this.playNextSong();
+      this.skipToNextSong();
     });
 
     this.musicPlayer.events.on('audio:error', (error) => {
@@ -41,19 +49,28 @@ export class MusicQueue {
 
   addTracks(tracks: Track[]) {
     this.queue.push(...tracks);
-    if (this.nowPlayingIndex === undefined) this.playNextSong();
+    if (this.nowPlayingIndex === undefined) this.skipToNextSong(1);
   }
 
-  playNextSong(skip = 1) {
+  async skipToNextSong(skip: number = 1) {
     const skipToSong =
       this.nowPlayingIndex != null ? this.nowPlayingIndex + skip : 0;
 
     if (skipToSong >= this.queue.length) {
-      return this.clear();
+      await this.queueSimilarSongs();
     }
 
     this.nowPlayingIndex = skipToSong;
     this.playCurrentSong();
+  }
+
+  async queueSimilarSongs() {
+    if (this.nowPlaying == null) return;
+
+    const similarTracks = await this.youtubeService.searchForSimilarVideos(
+      this.nowPlaying?.remoteId
+    );
+    this.addTracks(similarTracks.slice(0, 3));
   }
 
   private playCurrentSong() {

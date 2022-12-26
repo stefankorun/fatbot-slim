@@ -53,10 +53,11 @@ export class MusicQueue {
   }
 
   async skipToNextSong(skip: number = 1) {
-    const skipToSong =
+    let skipToSong =
       this.nowPlayingIndex != null ? this.nowPlayingIndex + skip : 0;
 
     if (skipToSong >= this.queue.length) {
+      skipToSong = this.queue.length;
       await this.queueSimilarSongs();
     }
 

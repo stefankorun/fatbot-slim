@@ -1,17 +1,17 @@
-import got from 'got';
+import { type youtube_v3 } from '@googleapis/youtube';
 import { singleton } from 'tsyringe';
 import ytdl from 'ytdl-core';
 import ytpl from 'ytpl';
 import { Track } from '../music/music-queue';
-import { ConfigurationService } from './configuration';
+import { YoutubeAPIService } from './youtube-apis';
 
 const DUMB_URL_REGEX = /(https?:\/\/)|(www\.)([\w-\?\.])+$/;
 
 const YOUTUBE_API_URL = 'https://youtube.googleapis.com/youtube/v3';
 
 @singleton()
-export class YoutubeService {
-  constructor(private config: ConfigurationService) {}
+export class MusicSearchService {
+  constructor(private youtubeAPI: YoutubeAPIService) {}
 
   private playlistToTracks(playlist: ytpl.Result): Track[] {
     return playlist.items.map((item) => {
@@ -24,39 +24,16 @@ export class YoutubeService {
   }
 
   async searchForSimilarVideos(videoId: string): Promise<Track[]> {
-    const res = await got
-      .get({
-        url: `${YOUTUBE_API_URL}/search?part=snippet&maxResults=3&relatedToVideoId=${videoId}&regionCode=US&type=video&videoCategoryId=10&key=${this.config.get(
-          'YOUTUBE_API_KEY'
-        )}`,
-      })
-      .json<YoutubeSearchResults>();
+    const res = await this.youtubeAPI.getRelatedVideos(videoId);
 
-    return res.items.map((searchResult) => ({
-      remoteId: searchResult.id.videoId,
-      name: searchResult.snippet.title,
-      url: `https://youtu.be/${searchResult.id.videoId}`,
-    }));
+    return res.items?.map(youtubeSearchResultToTrack) ?? [];
   }
 
   private async searchForVideo(query: string): Promise<Track | undefined> {
-    const res = await got
-      .get({
-        url: `${YOUTUBE_API_URL}/search?part=snippet&maxResults=1&q=${query}&regionCode=US&type=video&videoCategoryId=10&key=${this.config.get(
-          'YOUTUBE_API_KEY'
-        )}`,
-      })
-      .json<YoutubeSearchResults>();
+    const res = await this.youtubeAPI.search(query);
+    const searchResult = res.items?.[0];
 
-    const searchResult = res.items[0];
-
-    return (
-      searchResult && {
-        remoteId: searchResult.id.videoId,
-        name: searchResult.snippet.title,
-        url: `https://youtu.be/${searchResult.id.videoId}`,
-      }
-    );
+    return searchResult && youtubeSearchResultToTrack(searchResult);
   }
 
   async parse(candidate: string): Promise<Track[]> {
@@ -86,6 +63,19 @@ export class YoutubeService {
 
     throw new Error('Working only with Youtube urls at the moment.');
   }
+}
+
+function youtubeSearchResultToTrack(
+  searchResult: youtube_v3.Schema$SearchResult
+): Track {
+  if (!searchResult.id?.videoId || !searchResult.snippet?.title)
+    throw new Error('Cannot parse YouTube SearchResult to Track');
+
+  return {
+    remoteId: searchResult.id.videoId,
+    name: searchResult.snippet.title,
+    url: `https://youtu.be/${searchResult.id.videoId}`,
+  };
 }
 
 type YoutubeSearchResults = {

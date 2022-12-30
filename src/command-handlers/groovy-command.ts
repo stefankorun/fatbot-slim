@@ -3,7 +3,7 @@ export enum GroovyCommand {
   Pause = 'odmori',
   Resume = 'prodolzi',
   ShowQueue = 'lager',
-  Stop = 'sus-bre',
+  Stop = 'sus',
   SkipSong = 'sledeca',
   SurpriseMe = 'bicu-poznata',
   KolkuVistiniIma = 'kolku-vistini-ima',

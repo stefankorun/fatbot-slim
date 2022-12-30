@@ -6,7 +6,7 @@ import {
 import { GuildMember, VoiceChannel } from 'discord.js';
 import { singleton } from 'tsyringe';
 import { DiscordClient } from '../discord-client';
-import { YoutubeService } from '../services/youtube';
+import { MusicSearchService } from '../services/music-search';
 import { MusicPlayer } from './music-player';
 import { MusicQueue } from './music-queue';
 
@@ -14,7 +14,7 @@ import { MusicQueue } from './music-queue';
 export class GroobyBot {
   constructor(
     private discordClient: DiscordClient,
-    private youtubeService: YoutubeService,
+    private youtubeService: MusicSearchService,
     private musicQueue: MusicQueue,
     private musicPlayer: MusicPlayer
   ) {}

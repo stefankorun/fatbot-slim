@@ -27,7 +27,7 @@ export class PlayHandler implements CommandHandler {
 
   async handle(command: Command<CommandInteraction>) {
     const interaction = command.payload;
-    await interaction.deferReply();
+    await interaction.deferReply({ ephemeral: true });
 
     if (interaction?.member == null)
       throw new Error('Music command missing author.');

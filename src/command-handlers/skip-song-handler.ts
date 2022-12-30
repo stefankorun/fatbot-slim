@@ -29,8 +29,11 @@ export class SkipSongHandler implements CommandHandler<CommandInteraction> {
     if (!payload.isChatInputCommand())
       throw new Error('Command should be of type `ChatInputCommand`');
 
+    const interaction = payload;
+    await interaction.deferReply({ ephemeral: true });
+
     this.musicQueue.skipToNextSong(this.skipCount(payload));
-    await payload.reply('Samo napred');
+    await payload.editReply('Samo napred');
   }
 
   private skipCount(command: ChatInputCommandInteraction) {

@@ -1,6 +1,6 @@
 import { AudioPlayerError } from '@discordjs/voice';
-import { delay, inject, singleton } from 'tsyringe';
-import { YoutubeService } from '../services/youtube';
+import { singleton } from 'tsyringe';
+import { MusicSearchService } from '../services/music-search';
 import { MusicPlayer } from './music-player';
 
 export class Track {
@@ -24,7 +24,7 @@ export class MusicQueue {
 
   constructor(
     private musicPlayer: MusicPlayer,
-    @inject(delay(() => YoutubeService)) private youtubeService: YoutubeService
+    private youtubeService: MusicSearchService
   ) {
     this.musicPlayer.events.on('song:ended', () => {
       this.skipToNextSong();
@@ -71,7 +71,8 @@ export class MusicQueue {
     const similarTracks = await this.youtubeService.searchForSimilarVideos(
       this.nowPlaying?.remoteId
     );
-    this.addTracks(similarTracks.slice(0, 3));
+
+    this.addTracks(similarTracks.sort(() => Math.random() - 0.5).slice(0, 5));
   }
 
   private playCurrentSong() {

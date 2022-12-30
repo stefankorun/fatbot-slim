@@ -48,8 +48,7 @@ export class MusicPlayer {
     // `ytdl` settings taken from https://github.com/fent/node-ytdl-core/issues/902#issuecomment-1086880966
     const stream = ytdl(url, {
       filter: 'audioonly',
-      highWaterMark: 1 << 62,
-      liveBuffer: 1 << 62,
+      highWaterMark: 1 << 25,
       dlChunkSize: 0,
     });
     const resource = createAudioResource(stream, {

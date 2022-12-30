@@ -1,7 +1,7 @@
-import { Command, commandHandler, CommandHandler } from '../command-bus';
 import { ApplicationCommandData, CommandInteraction } from 'discord.js';
-import { GroovyCommand } from './groovy-command';
+import { Command, commandHandler, CommandHandler } from '../command-bus';
 import { MusicQueue } from '../music/music-queue';
+import { GroovyCommand } from './groovy-command';
 
 interface TrackQueueDisplay {
   name: string;
@@ -27,7 +27,7 @@ export class ShowQueueHandler implements CommandHandler<CommandInteraction> {
   }
 
   generateQueueList(): TrackQueueDisplay[] {
-    const NUMBER_OF_PREVIOUS_SONGS = 3;
+    const NUMBER_OF_PREVIOUS_SONGS = 10;
 
     const queue = this.musicQueue.queue;
     const safeNowPlayingIndex = this.musicQueue.nowPlayingIndex ?? 0;

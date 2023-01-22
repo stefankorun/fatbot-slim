@@ -38,6 +38,7 @@ export class YoutubeAPIService {
       regionCode: 'MK',
       type: ['video'],
       key: this.config.get('YOUTUBE_API_KEY'),
+      videoDuration: 'short',
     });
 
     return result.data;

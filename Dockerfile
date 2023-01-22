@@ -6,7 +6,7 @@ WORKDIR /usr/src/app
 
 COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
 
-RUN npm ci --production --silent && mv node_modules ../
+RUN npm ci --production && mv node_modules ../
 
 COPY . .
 
